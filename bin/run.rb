@@ -1,4 +1,7 @@
 require_relative '../db/setup'
+require_relative '../lib/all'
+
+require 'pry'
 # Remember to put the requires here for all the classes you write and want to use
 
 def parse_params(uri_fragments, query_param_string)
@@ -54,11 +57,58 @@ loop do
   else
     @request = parse(raw_request)
     @params  = @request[:params]
-    # Use the @request and @params ivars to full the request and
+    binding.pry
+    # Use the @request and @params instance variables to fill the request and
     # return an appropriate response
-
     # YOUR CODE GOES BELOW HERE
-
+    resource_name = @params[:resource]
+    resource_name = resource_name.slice(0..-2).capitalize
+    error = resource_name.downcase
+    resource_name = Object.const_get(resource_name)
+    if !@params[:resource].nil?
+      if @params[:id].nil? && @params[:action].nil?
+        @resources = resource_name.all
+        @resources.each do |resource|
+          puts "#{resource.id} - #{resource.first_name} #{resource.last_name}: #{resource.age}"
+        end
+      elsif !@params[:id].nil? && @params[:action].nil?
+        begin
+          resource = resource_name.find(@params[:id])
+          puts "#{resource.id} - #{resource.first_name} #{resource.last_name}: #{resource.age}"
+        rescue ActiveRecord::RecordNotFound
+          puts "Error 404: There is no #{error} with those parameters."
+        end
+      end
+    end
     # YOUR CODE GOES ABOVE HERE  ^
   end
 end
+
+# Normal
+# GET http://localhost:3000/users HTTP/1.1
+# GET http://localhost:3000/users/1 HTTP/1.1
+# GET http://localhost:3000/users/9999999 HTTP/1.1
+
+# Hard
+# GET http://localhost:3000/users?first_name=s
+# GET http://localhost:3000/users?limit=10&offset=10
+# DELETE http://localhost:3000/users/1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
