@@ -1,6 +1,5 @@
 require_relative '../db/setup'
 require_relative '../lib/all'
-
 require 'pry'
 # Remember to put the requires here for all the classes you write and want to use
 
@@ -65,7 +64,29 @@ loop do
     resource_name = resource_name.slice(0..-2).capitalize
     error = resource_name.downcase
     resource_name = Object.const_get(resource_name)
-    if !@params[:resource].nil?
+    if @request[:method] == "DELETE"
+      if !@params[:id].nil? && @params[:action].nil?
+        begin
+          @params_resources = User.find(@params[:id])
+          puts "The user with id ##{@params_resources.id} named #{@params_resources.first_name} #{@params_resources.last_name}, age: #{@params_resources.age}, was destroyed"
+          @params_resources.destroy
+        rescue ActiveRecord::RecordNotFound
+          puts "Error 404: There is no #{error} with those parameters."
+        end
+      end
+    elsif @params.size > 3 && @request[:method] == "GET"
+      if @params.has_key?(:first_name)
+        @params_resources = User.where("first_name LIKE ?", "#{@params[:first_name]}%")
+        @params_resources.each do |resource|
+          puts "#{resource.id} - #{resource.first_name} #{resource.last_name}: #{resource.age}"
+        end
+      elsif @params.has_key?(:limit) && @params.has_key?(:offset)
+        @params_resources = User.limit(10).offset(10)
+        @params_resources.each do |resource|
+          puts "#{resource.id} - #{resource.first_name} #{resource.last_name}: #{resource.age}"
+        end
+      end
+    elsif !@params[:resource].nil?
       if @params[:id].nil? && @params[:action].nil?
         @resources = resource_name.all
         @resources.each do |resource|
@@ -85,14 +106,14 @@ loop do
 end
 
 # Normal
-# GET http://localhost:3000/users HTTP/1.1
-# GET http://localhost:3000/users/1 HTTP/1.1
-# GET http://localhost:3000/users/9999999 HTTP/1.1
+# GET http://localhost:3000/users HTTP/1.1                    - Done
+# GET http://localhost:3000/users/1 HTTP/1.1                  - Done
+# GET http://localhost:3000/users/9999999 HTTP/1.1            - Done
 
 # Hard
-# GET http://localhost:3000/users?first_name=s
-# GET http://localhost:3000/users?limit=10&offset=10
-# DELETE http://localhost:3000/users/1
+# GET http://localhost:3000/users?first_name=s                - Done
+# GET http://localhost:3000/users?limit=10&offset=10          - Done
+# DELETE http://localhost:3000/users/1                        - Done
 
 
 
