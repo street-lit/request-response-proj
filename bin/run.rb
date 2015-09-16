@@ -105,16 +105,6 @@ loop do
   end
 end
 
-# Normal
-# GET http://localhost:3000/users HTTP/1.1                    - Done
-# GET http://localhost:3000/users/1 HTTP/1.1                  - Done
-# GET http://localhost:3000/users/9999999 HTTP/1.1            - Done
-
-# Hard
-# GET http://localhost:3000/users?first_name=s                - Done
-# GET http://localhost:3000/users?limit=10&offset=10          - Done
-# DELETE http://localhost:3000/users/1                        - Done
-
 
 
 
