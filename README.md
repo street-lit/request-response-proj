@@ -1,29 +1,24 @@
-This folder structure should be suitable for starting a project that uses a database:
+# Description
+For this app, I built a ruby command line app that accepts valid HTTP requests and returns an appropriate response while interacting with a Users table in a database.
 
-* Fork this repo
-* Clone this repo
-* Run `bundle install` to install `active_record`
-* `rake generate:migration <NAME>` to create a migration (Don't include the `<` `>` in your name, it should also start with a capital)
-* `rake db:migrate` to run the migration and update the database
-* Create models in lib that subclass `ActiveRecord::Base`
-* ... ?
-* Profit
+## To run
+Enter the root directory and run the command `ruby bin/run`
 
+When in the app, the user must enter the appropriate url format with the correct action and HTTP protocol to receive the appropriate data.
 
-## Rundown
+### View all users
+In order to view all users from the database, enter a url in the format: `GET http://localhost:3000/users HTTP/1.1`
 
-```
-.
-├── Gemfile             # Details which gems are required by the project
-├── README.md           # This file
-├── Rakefile            # Defines `rake generate:migration` and `db:migrate`
-├── config
-│   └── database.yml    # Defines the database config (e.g. name of file)
-├── console.rb          # `ruby console.rb` starts `pry` with models loaded
-├── db
-│   ├── dev.sqlite3     # Default location of the database file
-│   ├── migrate         # Folder containing generated migrations
-│   └── setup.rb        # `require`ing this file sets up the db connection
-└── lib                 # Your ruby code (models, etc.) should go here
-    └── all.rb          # Require this file to auto-require _all_ `.rb` files in `lib`
-```
+### View individual records
+In order to view an individual user from the database, enter a url in the format: `GET http://localhost:3000/users/1 HTTP/1.1`
+
+In case a record was requested that didn't exist, such as entering the url: `GET http://localhost:3000/users/9999999 HTTP/1.1` the user will see an error message.
+
+### View certain users with queries
+In order to view specific users whose name starts with a certain character from the database, enter a url in the format: `GET http://localhost:3000/users?first_name=s`
+
+### View certain users with queries
+In order to view a certain limit of users with an offset from the database, the user must enter a url in the following format: `GET http://localhost:3000/users?limit=10&offset=10`
+
+### Delete a specific user
+In order to delete a certain user from the database, the user must enter a url in the following format: `DELETE http://localhost:3000/users/1`
