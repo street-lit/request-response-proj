@@ -6,6 +6,8 @@ Enter the root directory and run the command `ruby bin/run`
 
 When in the app, the user must enter the appropriate url format with the correct action and HTTP protocol to receive the appropriate data.
 
+## Commands
+
 ### View all users
 In order to view all users from the database, enter a url in the format: `GET http://localhost:3000/users HTTP/1.1`
 
